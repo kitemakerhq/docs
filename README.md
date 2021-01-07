@@ -1,6 +1,6 @@
 # Kitemaker Developer API
 
-**Please note: this API is currently in private alpha. If you would like access, please send a mail to hi@kitemaker.co. This API is subject to frequent breakages until it enters a public
+**Please note:** this API is currently in private alpha. If you would like access, please send a mail to hi@kitemaker.co. This API is subject to frequent breakages until it enters a public
 
 Kitemaker's API is based on [GraphQL](https://graphql.org). It provides [queries](https://graphql.org/learn/queries) for fetching data and a set of [mutations](https://graphql.org/learn/queries/#mutations) for modifying objects.
 
