@@ -122,7 +122,7 @@ Fetch [WorkItem](#workitem) objects for a particular [Space](#space). This will 
 <td valign="top"><a href="#workitem">WorkItem</a>!</td>
 <td>
 
-Fetch a single [WorkItem][#workitem] by ID
+Fetch a single [WorkItem](#workitem) by ID
 
 </td>
 </tr>
