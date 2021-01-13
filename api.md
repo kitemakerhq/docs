@@ -87,12 +87,20 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>organization</strong></td>
 <td valign="top"><a href="#organization">Organization</a>!</td>
-<td></td>
+<td>
+
+Fetch the main organization object. Useful for finding out which users, spaces, labels, statuses, etc. are available before fetching and manipulating work items and themes
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>workItems</strong></td>
 <td valign="top"><a href="#workitemsqueryresult">WorkItemsQueryResult</a>!</td>
-<td></td>
+<td>
+
+Fetch [WorkItem](#workitem) objects for a particular [Space](#space). This will return at most 50 work items at a time so use the paging facilities to fetch more results
+
+</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">spaceId</td>
@@ -112,7 +120,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>workItem</strong></td>
 <td valign="top"><a href="#workitem">WorkItem</a>!</td>
-<td></td>
+<td>
+
+Fetch a single [WorkItem][#workitem] by ID
+
+</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">id</td>
@@ -122,7 +134,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>themes</strong></td>
 <td valign="top"><a href="#themesqueryresult">ThemesQueryResult</a>!</td>
-<td></td>
+<td>
+
+Fetch [Theme](#theme) objects for a particular [Space](#space). This will return at most 50 themes at a time so use the paging facilities to fetch more results
+
+</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">spaceId</td>
@@ -142,7 +158,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>theme</strong></td>
 <td valign="top"><a href="#theme">Theme</a>!</td>
-<td></td>
+<td>
+
+Fetch a single [Theme](#theme) by ID
+
+</td>
 </tr>
 <tr>
 <td colspan="2" align="right" valign="top">id</td>
@@ -440,6 +460,8 @@ This API is currently in private alpha and subject to change
 
 ### Application
 
+Applications represent some service/code/etc that integrates with Kitemaker. You maybe even have one if you're reading these documents
+
 <table>
 <thead>
 <tr>
@@ -475,6 +497,8 @@ This API is currently in private alpha and subject to change
 
 ### Comment
 
+Comments can be made on either [WorkItem](#workitem) or [Theme](#theme) objects
+
 <table>
 <thead>
 <tr>
@@ -503,7 +527,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>threadId</strong></td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+Comments in Kitemaker are threaded and the threadId identifies a set of comments in a single thread
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>updatedAt</strong></td>
@@ -723,17 +751,29 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>domain</strong></td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
+<td>
+
+The domain of a particular integration for systems like GitHub enterprise where each customer has a dedicated URL
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>externalId</strong></td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+The ID of the user in the external system (such as Slack or GitHub)
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>externalName</strong></td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+The name of the user in the external system (such as Slack or GitHub)
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>updatedAt</strong></td>
@@ -789,6 +829,8 @@ This API is currently in private alpha and subject to change
 </table>
 
 ### Organization
+
+The top level object describing the user or application's organization
 
 <table>
 <thead>
@@ -1058,7 +1100,20 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>description</strong></td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+The description of a theme as a markdown-formatted string
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>sort</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td>
+
+Sort is a string that determines where in a particular horizon column a theme will appear
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>horizon</strong></td>
@@ -1113,12 +1168,20 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>cursor</strong></td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+An opaque string used for paging. Pass this string to the themes query to iterate through the results a page at a time
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>hasMore</strong></td>
 <td valign="top"><a href="#boolean">Boolean</a>!</td>
-<td></td>
+<td>
+
+Indicates if more results are available (by requerying themes, passing the cursor)
+
+</td>
 </tr>
 </tbody>
 </table>
@@ -1203,7 +1266,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>description</strong></td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+The description of a work item as a markdown-formatted string
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>status</strong></td>
@@ -1213,7 +1280,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>sort</strong></td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+Sort is a string that determines where in a particular status column a work item will appear
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>members</strong></td>
@@ -1278,12 +1349,20 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>cursor</strong></td>
 <td valign="top"><a href="#string">String</a>!</td>
-<td></td>
+<td>
+
+An opaque string used for paging. Pass this string to the workItems query to iterate through the results a page at a time
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>hasMore</strong></td>
 <td valign="top"><a href="#boolean">Boolean</a>!</td>
-<td></td>
+<td>
+
+Indicates if more results are available (by requerying workItems, passing the cursor)
+
+</td>
 </tr>
 </tbody>
 </table>
@@ -1434,7 +1513,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>threadId</strong></td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
+<td>
+
+When creating a new comment thread, omit this property. Provide this property to add to an existing thread
+
+</td>
 </tr>
 </tbody>
 </table>
@@ -1463,7 +1546,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>threadId</strong></td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
+<td>
+
+When creating a new comment thread, omit this property. Provide this property to add to an existing thread
+
+</td>
 </tr>
 </tbody>
 </table>
@@ -1492,12 +1579,20 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>sort</strong></td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
+<td>
+
+The sort order of the [Theme](#theme). Omitting this parameter will make the theme the first theme in the horizon column
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>description</strong></td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
+<td>
+
+The [Theme](#theme) object's description as a markdown-formatted string
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>horizon</strong></td>
@@ -1536,7 +1631,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>description</strong></td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
+<td>
+
+The [WorkItem](#workitem) object's description as a markdown-formatted string
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>statusId</strong></td>
@@ -1546,7 +1645,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>sort</strong></td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
+<td>
+
+The sort order of the [WorkItem](#workitem). Omitting this parameter will make the work item the first work item in the status column
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>memberIds</strong></td>
@@ -1624,7 +1727,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>description</strong></td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
+<td>
+
+The [Theme](#theme) object's description as a markdown-formatted string
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>horizon</strong></td>
@@ -1658,7 +1765,11 @@ This API is currently in private alpha and subject to change
 <tr>
 <td colspan="2" valign="top"><strong>description</strong></td>
 <td valign="top"><a href="#string">String</a></td>
-<td></td>
+<td>
+
+The [WorkItem](#workitem) object's description as a markdown-formatted string
+
+</td>
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>statusId</strong></td>
@@ -1826,6 +1937,8 @@ This API is currently in private alpha and subject to change
 
 ### EffortSize
 
+T-shirt sizing for effort
+
 <table>
 <thead>
 <th align="left">Value</th>
@@ -1849,6 +1962,8 @@ This API is currently in private alpha and subject to change
 
 ### ImpactSize
 
+T-shirt sizing for impact
+
 <table>
 <thead>
 <th align="left">Value</th>
@@ -1871,6 +1986,8 @@ This API is currently in private alpha and subject to change
 </table>
 
 ### IntegrationType
+
+Different types of integrations, mainly useful for when fetching and displaying [Integration](#integration) and [IntegrationUser](#integrationuser) objects
 
 <table>
 <thead>
@@ -1903,6 +2020,8 @@ This API is currently in private alpha and subject to change
 
 ### StatusType
 
+Statuses for [WorkItem](#workitem) objects fall into a few different categories
+
 <table>
 <thead>
 <th align="left">Value</th>
@@ -1933,6 +2052,8 @@ This API is currently in private alpha and subject to change
 </table>
 
 ### ThemeHorizon
+
+The fixed set of time horizons for [Theme](#theme) objects
 
 <table>
 <thead>
