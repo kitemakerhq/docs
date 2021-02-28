@@ -21,7 +21,7 @@ There are currently two token types:
   * Personal access tokens - these tokens operate on the API as a particular user (within a single organization)
   * Application tokens - these tokens operate on the API as their own actor (i.e. a service user within a single organization)
 
-There is not currently any form of access control within an organization - so every token belonging to an organization has full access to that organization.
+Personal access tokens have access to the same spaces to which their associated user has access. Application tokens only have access to non-private spaces currently.
 
 ## API
 
