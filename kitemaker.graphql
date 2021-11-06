@@ -27,6 +27,7 @@ enum IntegrationType {
   TRELLO
   SLACK
   DISCORD
+  GITLAB
 }
 
 """
@@ -51,6 +52,14 @@ enum ThemeHorizon {
 }
 
 """
+Wether create an include or exclude filter
+"""
+enum StatusFilterType {
+  INCLUDE
+  EXCLUDE
+}
+
+"""
 The top level object describing the user or application's organization
 """
 type Organization {
@@ -60,6 +69,7 @@ type Organization {
   users: [User!]!
   integrations: [Integration!]!
   integrationUsers: [IntegrationUser!]!
+  applications: [Application!]!
   updatedAt: Date!
   createdAt: Date!
 }
@@ -70,6 +80,8 @@ type Space {
   name: String!
   labels: [Label!]!
   statuses: [Status!]!
+  private: Boolean!
+  members: [User!]
   updatedAt: Date!
   createdAt: Date!
 }
@@ -87,6 +99,8 @@ type Status {
   name: String!
   type: StatusType!
   default: Boolean!
+  updatedAt: Date!
+  createdAt: Date!
 }
 
 type User {
@@ -94,6 +108,8 @@ type User {
   username: String!
   name: String
   avatar: String
+  guest: Boolean!
+  deactivated: Boolean!
   updatedAt: Date!
   createdAt: Date!
 }
@@ -240,11 +256,21 @@ type Query {
   """
   Fetch [WorkItem](#workitem) objects for a particular [Space](#space). This will return at most 50 work items at a time so use the paging facilities to fetch more results
   """
-  workItems(spaceId: ID, cursor: String, count: Int): WorkItemsQueryResult!
+  workItems(
+    spaceId: ID
+    cursor: String
+    count: Int
+    statusFilter: StatusFilter
+  ): WorkItemsQueryResult!
+
   """
   Fetch a single [WorkItem](#workitem) by ID
   """
   workItem(id: ID!): WorkItem!
+  """
+  Fetch a single [WorkItem](#workitem) by number (e.g., 'ABC-123')
+  """
+  workItemByNumber(number: String!): WorkItem!
   """
   Fetch [Theme](#theme) objects for a particular [Space](#space). This will return at most 50 themes at a time so use the paging facilities to fetch more results
   """
@@ -253,6 +279,10 @@ type Query {
   Fetch a single [Theme](#theme) by ID
   """
   theme(id: ID!): Theme!
+  """
+  Fetch a single [Theme](#theme) by number (e.g. 'ABC-123')
+  """
+  themeByNumber(number: String): Theme!
   """
   Fetch a single [Comment](#comment) by ID
   """
@@ -296,6 +326,14 @@ input EditWorkItemInput {
 
 type EditWorkItemResult {
   workItem: WorkItem!
+}
+
+"""
+Filter used when requesting work items
+"""
+input StatusFilter {
+  type: StatusFilterType!
+  filter: [StatusType!]!
 }
 
 input AddMembersToWorkItemInput {
