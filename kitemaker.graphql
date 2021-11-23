@@ -52,11 +52,21 @@ enum ThemeHorizon {
 }
 
 """
-Wether create an include or exclude filter
+Whether to treat as an include or exclude filter
 """
 enum StatusFilterType {
   INCLUDE
   EXCLUDE
+}
+
+"""
+Different states that a code review request can be in
+"""
+enum CodeReviewRequestState {
+  OPEN
+  CLOSED
+  MERGED
+  LOCKED
 }
 
 """
@@ -222,6 +232,29 @@ type Theme {
   watchers: [User!]!
   updatedAt: Date!
   createdAt: Date!
+  color: String!
+}
+
+type CodeReviewRequestDetails {
+  number: String!
+  url: String!
+  title: String!
+}
+
+type CodeReviewRequestLink {
+  name: String!
+  url: String!
+}
+
+type CodeReviewRequest {
+  id: ID!
+  codeReviewType: IntegrationType!
+  workItems: [WorkItem!]!
+  state: CodeReviewRequestState!
+  details: CodeReviewRequestDetails!
+  links: [CodeReviewRequestLink!]!
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 type WorkItemsQueryResult {
@@ -253,6 +286,10 @@ type Query {
   Fetch the main organization object. Useful for finding out which users, spaces, labels, statuses, etc. are available before fetching and manipulating work items and themes
   """
   organization: Organization!
+  """
+  Fetch a space by key (e.g., 'ABC')
+  """
+  spaceByKey(key: String!): Space!
   """
   Fetch [WorkItem](#workitem) objects for a particular [Space](#space). This will return at most 50 work items at a time so use the paging facilities to fetch more results
   """
@@ -287,6 +324,10 @@ type Query {
   Fetch a single [Comment](#comment) by ID
   """
   comment(id: ID!): Comment!
+  """
+  Fetch a code review request by URL
+  """
+  codeReviewRequest(url: String!): CodeReviewRequest!
 }
 
 input CreateWorkItemInput {
@@ -295,7 +336,8 @@ input CreateWorkItemInput {
   The [WorkItem](#workitem) object's description as a markdown-formatted string
   """
   description: String
-  statusId: ID!
+  spaceId: ID
+  statusId: ID
   """
   The sort order of the [WorkItem](#workitem). Omitting this parameter will make the work item the first work item in the status column
   """
@@ -495,46 +537,44 @@ type EditCommentResult {
   comment: Comment!
 }
 
+input CodeReviewRequestLinkInput {
+  name: String!
+  url: String!
+}
+
+input EditCodeReviewRequestInput {
+  id: ID!
+  links: [CodeReviewRequestLinkInput!]
+}
+
+type EditCodeReviewRequestResult {
+  codeReviewRequest: CodeReviewRequest!
+}
+
 type Mutation {
   createWorkItem(input: CreateWorkItemInput!): CreateWorkItemResult!
   editWorkItem(input: EditWorkItemInput!): EditWorkItemResult!
-  addMembersToWorkItem(
-    input: AddMembersToWorkItemInput!
-  ): AddMembersToWorkItemResult!
+  addMembersToWorkItem(input: AddMembersToWorkItemInput!): AddMembersToWorkItemResult!
   removeMembersFromWorkItem(
     input: RemoveMembersFromWorkItemInput!
   ): RemoveMembersFromWorkItemResult!
-  addWatchersToWorkItem(
-    input: AddWatchersToWorkItemInput!
-  ): AddWatchersToWorkItemResult!
+  addWatchersToWorkItem(input: AddWatchersToWorkItemInput!): AddWatchersToWorkItemResult!
   removeWatchersFromWorkItem(
     input: RemoveWatchersFromWorkItemInput!
   ): RemoveWatchersFromWorkItemResult!
-  addLabelsToWorkItem(
-    input: AddLabelsToWorkItemInput!
-  ): AddMembersToWorkItemResult!
-  removeLabelsFromWorkItem(
-    input: RemoveLabelsFromWorkItemInput!
-  ): RemoveLabelsFromWorkItemResult!
-  createCommentOnWorkItem(
-    input: CreateCommentOnWorkItemInput!
-  ): CreateCommentOnWorkItemResult!
+  addLabelsToWorkItem(input: AddLabelsToWorkItemInput!): AddMembersToWorkItemResult!
+  removeLabelsFromWorkItem(input: RemoveLabelsFromWorkItemInput!): RemoveLabelsFromWorkItemResult!
+  createCommentOnWorkItem(input: CreateCommentOnWorkItemInput!): CreateCommentOnWorkItemResult!
 
   createTheme(input: CreateThemeInput!): CreateThemeResult!
   editTheme(input: EditThemeInput!): EditThemeResult!
   addWatchersToTheme(input: AddWatchersToThemeInput!): AddWatchersToThemeResult!
-  removeWatchersFromTheme(
-    input: RemoveWatchersFromThemeInput!
-  ): RemoveWatchersFromThemeResult!
-  addWorkItemsToTheme(
-    input: AddWorkItemsToThemeInput!
-  ): AddWorkItemsToThemeResult!
-  removeWorkItemsFromTheme(
-    input: RemoveWorkItemsFromThemeInput!
-  ): RemoveWorkItemsFromThemeResult!
-  createCommentOnTheme(
-    input: CreateCommentOnThemeInput!
-  ): CreateCommentOnThemeResult!
+  removeWatchersFromTheme(input: RemoveWatchersFromThemeInput!): RemoveWatchersFromThemeResult!
+  addWorkItemsToTheme(input: AddWorkItemsToThemeInput!): AddWorkItemsToThemeResult!
+  removeWorkItemsFromTheme(input: RemoveWorkItemsFromThemeInput!): RemoveWorkItemsFromThemeResult!
+  createCommentOnTheme(input: CreateCommentOnThemeInput!): CreateCommentOnThemeResult!
 
   editComment(input: EditCommentInput!): EditCommentResult!
+
+  editCodeReviewRequest(input: EditCodeReviewRequestInput!): EditCodeReviewRequestResult!
 }
