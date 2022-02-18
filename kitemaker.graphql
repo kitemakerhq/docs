@@ -28,6 +28,7 @@ enum IntegrationType {
   SLACK
   DISCORD
   GITLAB
+  ZAPIER
 }
 
 """
@@ -360,6 +361,7 @@ input EditWorkItemInput {
   The [WorkItem](#workitem) object's description as a markdown-formatted string
   """
   description: String
+  spaceId: ID
   statusId: ID
   sort: String
   effort: EffortSize
@@ -551,6 +553,16 @@ type EditCodeReviewRequestResult {
   codeReviewRequest: CodeReviewRequest!
 }
 
+input CreateLabelInput {
+  spaceId: ID!
+  name: String!
+  color: String
+}
+
+type CreateLabelResult {
+  label: Label!
+}
+
 type Mutation {
   createWorkItem(input: CreateWorkItemInput!): CreateWorkItemResult!
   editWorkItem(input: EditWorkItemInput!): EditWorkItemResult!
@@ -577,4 +589,6 @@ type Mutation {
   editComment(input: EditCommentInput!): EditCommentResult!
 
   editCodeReviewRequest(input: EditCodeReviewRequestInput!): EditCodeReviewRequestResult!
+
+  createLabel(input: CreateLabelInput!): CreateLabelResult!
 }
