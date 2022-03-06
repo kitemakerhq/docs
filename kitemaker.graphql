@@ -1,4 +1,5 @@
 scalar Date
+scalar JSON
 
 """
 T-shirt sizing for effort
@@ -68,6 +69,26 @@ enum CodeReviewRequestState {
   CLOSED
   MERGED
   LOCKED
+}
+
+"""
+Different types of activities
+"""
+enum ActivityType {
+  CREATED
+  STATUS_CHANGED
+  LABELS_CHANGED
+  MEMBERS_CHANGED
+  TITLE_CHANGED
+  DESCRIPTION_CHANGED
+  IMPORTED
+  DUPLICATED_TO
+  DUPLICATED_FROM
+  MENTIONED
+  MENTIONED_IN_INTEGRATION
+  HORIZON_CHANGED
+  CODE_REVIEW_REQUEST_ADDED
+  DEPENDENCY
 }
 
 """
@@ -188,6 +209,22 @@ type Comment {
   createdAt: Date!
 }
 
+"""
+Activities are found on either [WorkItem](#workitem) or [Theme](#theme) objects
+"""
+type Activity {
+  id: ID!
+  type: ActivityType!
+  """
+  Details are properties specific to the type of activity.
+  Note: this property should be considered a beta part of the API and is subject to change
+  """
+  details: JSON!
+  entity: Entity!
+  updatedAt: Date!
+  createdAt: Date!
+}
+
 type WorkItem {
   id: ID!
   number: String!
@@ -207,6 +244,7 @@ type WorkItem {
   watchers: [User!]!
   labels: [Label!]!
   comments: [Comment!]!
+  activities: [Activity!]!
   themes: [Theme!]!
   effort: EffortSize
   impact: ImpactSize
@@ -230,6 +268,7 @@ type Theme {
   horizon: ThemeHorizon!
   workItems: [WorkItem!]!
   comments: [Comment!]!
+  activities: [Activity!]!
   watchers: [User!]!
   updatedAt: Date!
   createdAt: Date!
