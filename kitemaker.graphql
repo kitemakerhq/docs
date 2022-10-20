@@ -2,24 +2,6 @@ scalar Date
 scalar JSON
 
 """
-T-shirt sizing for effort
-"""
-enum EffortSize {
-  SMALL
-  MEDIUM
-  LARGE
-}
-
-"""
-T-shirt sizing for impact
-"""
-enum ImpactSize {
-  SMALL
-  MEDIUM
-  LARGE
-}
-
-"""
 Different types of integrations, mainly useful for when fetching and displaying [Integration](#integration) and [IntegrationUser](#integrationuser) objects
 """
 enum IntegrationType {
@@ -97,6 +79,7 @@ The top level object describing the user or application's organization
 type Organization {
   id: ID!
   name: String!
+  slug: String!
   spaces: [Space!]!
   users: [User!]!
   integrations: [Integration!]!
@@ -110,6 +93,7 @@ type Space {
   id: ID!
   key: String!
   name: String!
+  slug: String!
   labels: [Label!]!
   statuses: [Status!]!
   private: Boolean!
@@ -215,6 +199,7 @@ Activities are found on either [WorkItem](#workitem) or [Theme](#theme) objects
 type Activity {
   id: ID!
   type: ActivityType!
+  actor: Actor!
   """
   Details are properties specific to the type of activity.
   Note: this property should be considered a beta part of the API and is subject to change
@@ -246,8 +231,8 @@ type WorkItem {
   comments: [Comment!]!
   activities: [Activity!]!
   themes: [Theme!]!
-  effort: EffortSize
-  impact: ImpactSize
+  effort: String
+  impact: String
   updatedAt: Date!
   createdAt: Date!
 }
@@ -265,11 +250,16 @@ type Theme {
   Sort is a string that determines where in a particular horizon column a theme will appear
   """
   sort: String!
+  space: Space!
   horizon: ThemeHorizon!
   workItems: [WorkItem!]!
   comments: [Comment!]!
   activities: [Activity!]!
   watchers: [User!]!
+  members: [User!]!
+  labels: [Label!]!
+  effort: String
+  impact: String
   updatedAt: Date!
   createdAt: Date!
   color: String!
@@ -385,8 +375,8 @@ input CreateWorkItemInput {
   memberIds: [ID!]
   watcherIds: [ID!]
   labelIds: [ID!]
-  effort: EffortSize
-  impact: ImpactSize
+  effort: String
+  impact: String
 }
 
 type CreateWorkItemResult {
@@ -403,8 +393,8 @@ input EditWorkItemInput {
   spaceId: ID
   statusId: ID
   sort: String
-  effort: EffortSize
-  impact: ImpactSize
+  effort: String
+  impact: String
 }
 
 type EditWorkItemResult {
@@ -513,6 +503,10 @@ input EditThemeInput {
   The [Theme](#theme) object's description as a markdown-formatted string
   """
   description: String
+  """
+  DANGER: Changing the spaceId is experimental and currently removes all of a theme's work items
+  """
+  spaceId: ID
   horizon: ThemeHorizon
 }
 
@@ -553,6 +547,24 @@ input RemoveWatchersFromThemeInput {
 }
 
 type RemoveWatchersFromThemeResult {
+  theme: Theme!
+}
+
+input AddLabelsToThemeInput {
+  id: ID!
+  labelIds: [ID!]!
+}
+
+type AddLabelsToThemeResult {
+  theme: Theme!
+}
+
+input RemoveLabelsFromThemeInput {
+  id: ID!
+  labelIds: [ID!]!
+}
+
+type RemoveLabelsFromThemeResult {
   theme: Theme!
 }
 
@@ -605,29 +617,54 @@ type CreateLabelResult {
 type Mutation {
   createWorkItem(input: CreateWorkItemInput!): CreateWorkItemResult!
   editWorkItem(input: EditWorkItemInput!): EditWorkItemResult!
-  addMembersToWorkItem(input: AddMembersToWorkItemInput!): AddMembersToWorkItemResult!
+  addMembersToWorkItem(
+    input: AddMembersToWorkItemInput!
+  ): AddMembersToWorkItemResult!
   removeMembersFromWorkItem(
     input: RemoveMembersFromWorkItemInput!
   ): RemoveMembersFromWorkItemResult!
-  addWatchersToWorkItem(input: AddWatchersToWorkItemInput!): AddWatchersToWorkItemResult!
+  addWatchersToWorkItem(
+    input: AddWatchersToWorkItemInput!
+  ): AddWatchersToWorkItemResult!
   removeWatchersFromWorkItem(
     input: RemoveWatchersFromWorkItemInput!
   ): RemoveWatchersFromWorkItemResult!
-  addLabelsToWorkItem(input: AddLabelsToWorkItemInput!): AddMembersToWorkItemResult!
-  removeLabelsFromWorkItem(input: RemoveLabelsFromWorkItemInput!): RemoveLabelsFromWorkItemResult!
-  createCommentOnWorkItem(input: CreateCommentOnWorkItemInput!): CreateCommentOnWorkItemResult!
+  addLabelsToWorkItem(
+    input: AddLabelsToWorkItemInput!
+  ): AddMembersToWorkItemResult!
+  removeLabelsFromWorkItem(
+    input: RemoveLabelsFromWorkItemInput!
+  ): RemoveLabelsFromWorkItemResult!
+  createCommentOnWorkItem(
+    input: CreateCommentOnWorkItemInput!
+  ): CreateCommentOnWorkItemResult!
 
   createTheme(input: CreateThemeInput!): CreateThemeResult!
   editTheme(input: EditThemeInput!): EditThemeResult!
   addWatchersToTheme(input: AddWatchersToThemeInput!): AddWatchersToThemeResult!
-  removeWatchersFromTheme(input: RemoveWatchersFromThemeInput!): RemoveWatchersFromThemeResult!
-  addWorkItemsToTheme(input: AddWorkItemsToThemeInput!): AddWorkItemsToThemeResult!
-  removeWorkItemsFromTheme(input: RemoveWorkItemsFromThemeInput!): RemoveWorkItemsFromThemeResult!
-  createCommentOnTheme(input: CreateCommentOnThemeInput!): CreateCommentOnThemeResult!
+  removeWatchersFromTheme(
+    input: RemoveWatchersFromThemeInput!
+  ): RemoveWatchersFromThemeResult!
+  addWorkItemsToTheme(
+    input: AddWorkItemsToThemeInput!
+  ): AddWorkItemsToThemeResult!
+  removeWorkItemsFromTheme(
+    input: RemoveWorkItemsFromThemeInput!
+  ): RemoveWorkItemsFromThemeResult!
+  addLabelsToTheme(input: AddLabelsToThemeInput!): AddLabelsToThemeResult!
+  removeLabelsFromTheme(
+    input: RemoveLabelsFromThemeInput!
+  ): RemoveLabelsFromThemeResult!
+
+  createCommentOnTheme(
+    input: CreateCommentOnThemeInput!
+  ): CreateCommentOnThemeResult!
 
   editComment(input: EditCommentInput!): EditCommentResult!
 
-  editCodeReviewRequest(input: EditCodeReviewRequestInput!): EditCodeReviewRequestResult!
+  editCodeReviewRequest(
+    input: EditCodeReviewRequestInput!
+  ): EditCodeReviewRequestResult!
 
   createLabel(input: CreateLabelInput!): CreateLabelResult!
 }
