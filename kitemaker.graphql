@@ -130,6 +130,27 @@ type User {
   createdAt: Date!
 }
 
+type ReleasePlan {
+  id: ID!
+  number: String!
+  space: Space!
+  title: String!
+  description: String
+  startDate: Date!
+  endDate: Date!
+  archived: Boolean!
+  archivedAt: Date
+  createdAt: Date!
+  updatedAt: Date!
+  items: [ReleasePlanItem!]!
+}
+
+type ReleasePlanItem {
+  workItem: WorkItem!
+  startOffset: Int
+  duration: Int
+}
+
 type Integration {
   id: ID!
   type: IntegrationType!
@@ -316,6 +337,13 @@ type Query {
   Fetch the main organization object. Useful for finding out which users, spaces, labels, statuses, etc. are available before fetching and manipulating work items and themes
   """
   organization: Organization!
+  """
+  EXPERIMENTAL: Fetches release plans for a space
+  """
+  _experimental_releasePlans(
+    spaceId: String!
+    includeArchived: Boolean
+  ): [ReleasePlan!]!
   """
   Fetch a space by key (e.g., 'ABC')
   """
