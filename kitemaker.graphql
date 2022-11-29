@@ -345,6 +345,10 @@ type Query {
     includeArchived: Boolean
   ): [ReleasePlan!]!
   """
+  EXPERIMENTAL: Fetches a release plan by ID
+  """
+  _experimental_releasePlan(id: ID!): ReleasePlan!
+  """
   Fetch a space by key (e.g., 'ABC')
   """
   spaceByKey(key: String!): Space!
