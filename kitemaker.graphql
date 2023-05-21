@@ -254,6 +254,8 @@ type WorkItem {
   themes: [Theme!]!
   effort: String
   impact: String
+  closedAt: Date
+  archivedAt: Date
   updatedAt: Date!
   createdAt: Date!
 }
@@ -281,6 +283,7 @@ type Theme {
   labels: [Label!]!
   effort: String
   impact: String
+  archivedAt: Date
   updatedAt: Date!
   createdAt: Date!
   color: String!
